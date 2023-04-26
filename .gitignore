@@ -1,6 +1,6 @@
 # Sensitive files
-keys.py
+# keys.py
 
 # Data files
-leagues/
+# *.json
 *.db
