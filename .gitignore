@@ -1,0 +1,6 @@
+# Sensitive files
+keys.py
+
+# Data files
+leagues/
+*.db

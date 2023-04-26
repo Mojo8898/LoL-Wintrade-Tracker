@@ -1,0 +1,152 @@
+from peewee import DoesNotExist
+
+from . import api_utils
+from database.models import Summoner, Match, Participant
+
+
+def get_participants(region, matches):
+    participants = []
+    match_index=0
+    for match in matches:
+        match_data = api_utils.get_match(region, match.id)
+        updated_match = Match(
+            id = match.id,
+            game_duration = match_data['info']['gameDuration'],
+            end_timestamp = match_data['info']['gameEndTimestamp'],
+            game_version = match_data['info']['gameVersion'],
+        )
+        updated_match.save()
+        for participant_index in range(10):
+            try: 
+                Summoner.get(Summoner.puuid == match_data['metadata']['participants'][participant_index])
+                participant = Participant(
+                    summoner_puuid = match_data['metadata']['participants'][participant_index],
+                    match_id = match.id,
+                    allInPings = match_data['info']['participants'][participant_index]['allInPings'],
+                    assistMePings = match_data['info']['participants'][participant_index]['assistMePings'],
+                    assists = match_data['info']['participants'][participant_index]['assists'],
+                    baitPings = match_data['info']['participants'][participant_index]['baitPings'],
+                    baronKills = match_data['info']['participants'][participant_index]['baronKills'],
+                    basicPings = match_data['info']['participants'][participant_index]['basicPings'],
+                    bountyLevel = match_data['info']['participants'][participant_index]['bountyLevel'],
+                    champExperience = match_data['info']['participants'][participant_index]['champExperience'],
+                    champLevel = match_data['info']['participants'][participant_index]['champLevel'],
+                    championId = match_data['info']['participants'][participant_index]['championId'],
+                    championName = match_data['info']['participants'][participant_index]['championName'],
+                    championTransform = match_data['info']['participants'][participant_index]['championTransform'],
+                    commandPings = match_data['info']['participants'][participant_index]['commandPings'],
+                    consumablesPurchased = match_data['info']['participants'][participant_index]['consumablesPurchased'],
+                    damageDealtToBuildings = match_data['info']['participants'][participant_index]['damageDealtToBuildings'],
+                    damageDealtToObjectives = match_data['info']['participants'][participant_index]['damageDealtToObjectives'],
+                    damageDealtToTurrets = match_data['info']['participants'][participant_index]['damageDealtToTurrets'],
+                    damageSelfMitigated = match_data['info']['participants'][participant_index]['damageSelfMitigated'],
+                    dangerPings = match_data['info']['participants'][participant_index]['dangerPings'],
+                    deaths = match_data['info']['participants'][participant_index]['deaths'],
+                    detectorWardsPlaced = match_data['info']['participants'][participant_index]['detectorWardsPlaced'],
+                    doubleKills = match_data['info']['participants'][participant_index]['doubleKills'],
+                    dragonKills = match_data['info']['participants'][participant_index]['dragonKills'],
+                    eligibleForProgression = match_data['info']['participants'][participant_index]['eligibleForProgression'],
+                    enemyMissingPings = match_data['info']['participants'][participant_index]['enemyMissingPings'],
+                    enemyVisionPings = match_data['info']['participants'][participant_index]['enemyVisionPings'],
+                    firstBloodAssist = match_data['info']['participants'][participant_index]['firstBloodAssist'],
+                    firstBloodKill = match_data['info']['participants'][participant_index]['firstBloodKill'],
+                    firstTowerAssist = match_data['info']['participants'][participant_index]['firstTowerAssist'],
+                    firstTowerKill = match_data['info']['participants'][participant_index]['firstTowerKill'],
+                    gameEndedInEarlySurrender = match_data['info']['participants'][participant_index]['gameEndedInEarlySurrender'],
+                    gameEndedInSurrender = match_data['info']['participants'][participant_index]['gameEndedInSurrender'],
+                    getBackPings = match_data['info']['participants'][participant_index]['getBackPings'],
+                    goldEarned = match_data['info']['participants'][participant_index]['goldEarned'],
+                    goldSpent = match_data['info']['participants'][participant_index]['goldSpent'],
+                    holdPings = match_data['info']['participants'][participant_index]['holdPings'],
+                    individualPosition = match_data['info']['participants'][participant_index]['individualPosition'],
+                    inhibitorKills = match_data['info']['participants'][participant_index]['inhibitorKills'],
+                    inhibitorTakedowns = match_data['info']['participants'][participant_index]['inhibitorTakedowns'],
+                    inhibitorsLost = match_data['info']['participants'][participant_index]['inhibitorsLost'],
+                    item0 = match_data['info']['participants'][participant_index]['item0'],
+                    item1 = match_data['info']['participants'][participant_index]['item1'],
+                    item2 = match_data['info']['participants'][participant_index]['item2'],
+                    item3 = match_data['info']['participants'][participant_index]['item3'],
+                    item4 = match_data['info']['participants'][participant_index]['item4'],
+                    item5 = match_data['info']['participants'][participant_index]['item5'],
+                    item6 = match_data['info']['participants'][participant_index]['item6'],
+                    itemsPurchased = match_data['info']['participants'][participant_index]['itemsPurchased'],
+                    killingSprees = match_data['info']['participants'][participant_index]['killingSprees'],
+                    kills = match_data['info']['participants'][participant_index]['kills'],
+                    lane = match_data['info']['participants'][participant_index]['lane'],
+                    largestCriticalStrike = match_data['info']['participants'][participant_index]['largestCriticalStrike'],
+                    largestKillingSpree = match_data['info']['participants'][participant_index]['largestKillingSpree'],
+                    largestMultiKill = match_data['info']['participants'][participant_index]['largestMultiKill'],
+                    longestTimeSpentLiving = match_data['info']['participants'][participant_index]['longestTimeSpentLiving'],
+                    magicDamageDealt = match_data['info']['participants'][participant_index]['magicDamageDealt'],
+                    magicDamageDealtToChampions = match_data['info']['participants'][participant_index]['magicDamageDealtToChampions'],
+                    magicDamageTaken = match_data['info']['participants'][participant_index]['magicDamageTaken'],
+                    needVisionPings = match_data['info']['participants'][participant_index]['needVisionPings'],
+                    neutralMinionsKilled = match_data['info']['participants'][participant_index]['neutralMinionsKilled'],
+                    nexusKills = match_data['info']['participants'][participant_index]['nexusKills'],
+                    nexusLost = match_data['info']['participants'][participant_index]['nexusLost'],
+                    nexusTakedowns = match_data['info']['participants'][participant_index]['nexusTakedowns'],
+                    objectivesStolen = match_data['info']['participants'][participant_index]['objectivesStolen'],
+                    objectivesStolenAssists = match_data['info']['participants'][participant_index]['objectivesStolenAssists'],
+                    onMyWayPings = match_data['info']['participants'][participant_index]['onMyWayPings'],
+                    participantId = match_data['info']['participants'][participant_index]['participantId'],
+                    pentaKills = match_data['info']['participants'][participant_index]['pentaKills'],
+                    physicalDamageDealt = match_data['info']['participants'][participant_index]['physicalDamageDealt'],
+                    physicalDamageDealtToChampions = match_data['info']['participants'][participant_index]['physicalDamageDealtToChampions'],
+                    physicalDamageTaken = match_data['info']['participants'][participant_index]['physicalDamageTaken'],
+                    profileIcon = match_data['info']['participants'][participant_index]['profileIcon'],
+                    pushPings = match_data['info']['participants'][participant_index]['pushPings'],
+                    quadraKills = match_data['info']['participants'][participant_index]['quadraKills'],
+                    riotIdName = match_data['info']['participants'][participant_index]['riotIdName'],
+                    riotIdTagline = match_data['info']['participants'][participant_index]['riotIdTagline'],
+                    role = match_data['info']['participants'][participant_index]['role'],
+                    sightWardsBoughtInGame = match_data['info']['participants'][participant_index]['sightWardsBoughtInGame'],
+                    spell1Casts = match_data['info']['participants'][participant_index]['spell1Casts'],
+                    spell2Casts = match_data['info']['participants'][participant_index]['spell2Casts'],
+                    spell3Casts = match_data['info']['participants'][participant_index]['spell3Casts'],
+                    spell4Casts = match_data['info']['participants'][participant_index]['spell4Casts'],
+                    summoner1Casts = match_data['info']['participants'][participant_index]['summoner1Casts'],
+                    summoner1Id = match_data['info']['participants'][participant_index]['summoner1Id'],
+                    summoner2Casts = match_data['info']['participants'][participant_index]['summoner2Casts'],
+                    summoner2Id = match_data['info']['participants'][participant_index]['summoner2Id'],
+                    summonerId = match_data['info']['participants'][participant_index]['summonerId'],
+                    summonerLevel = match_data['info']['participants'][participant_index]['summonerLevel'],
+                    summonerName = match_data['info']['participants'][participant_index]['summonerName'],
+                    teamEarlySurrendered = match_data['info']['participants'][participant_index]['teamEarlySurrendered'],
+                    teamId = match_data['info']['participants'][participant_index]['teamId'],
+                    teamPosition = match_data['info']['participants'][participant_index]['teamPosition'],
+                    timeCCingOthers = match_data['info']['participants'][participant_index]['timeCCingOthers'],
+                    timePlayed = match_data['info']['participants'][participant_index]['timePlayed'],
+                    totalDamageDealt = match_data['info']['participants'][participant_index]['totalDamageDealt'],
+                    totalDamageDealtToChampions = match_data['info']['participants'][participant_index]['totalDamageDealtToChampions'],
+                    totalDamageShieldedOnTeammates = match_data['info']['participants'][participant_index]['totalDamageShieldedOnTeammates'],
+                    totalDamageTaken = match_data['info']['participants'][participant_index]['totalDamageTaken'],
+                    totalHeal = match_data['info']['participants'][participant_index]['totalHeal'],
+                    totalHealsOnTeammates = match_data['info']['participants'][participant_index]['totalHealsOnTeammates'],
+                    totalMinionsKilled = match_data['info']['participants'][participant_index]['totalMinionsKilled'],
+                    totalTimeCCDealt = match_data['info']['participants'][participant_index]['totalTimeCCDealt'],
+                    totalTimeSpentDead = match_data['info']['participants'][participant_index]['totalTimeSpentDead'],
+                    totalUnitsHealed = match_data['info']['participants'][participant_index]['totalUnitsHealed'],
+                    tripleKills = match_data['info']['participants'][participant_index]['tripleKills'],
+                    trueDamageDealt = match_data['info']['participants'][participant_index]['trueDamageDealt'],
+                    trueDamageDealtToChampions = match_data['info']['participants'][participant_index]['trueDamageDealtToChampions'],
+                    trueDamageTaken = match_data['info']['participants'][participant_index]['trueDamageTaken'],
+                    turretKills = match_data['info']['participants'][participant_index]['turretKills'],
+                    turretTakedowns = match_data['info']['participants'][participant_index]['turretTakedowns'],
+                    turretsLost = match_data['info']['participants'][participant_index]['turretsLost'],
+                    unrealKills = match_data['info']['participants'][participant_index]['unrealKills'],
+                    visionClearedPings = match_data['info']['participants'][participant_index]['visionClearedPings'],
+                    visionScore = match_data['info']['participants'][participant_index]['visionScore'],
+                    visionWardsBoughtInGame = match_data['info']['participants'][participant_index]['visionWardsBoughtInGame'],
+                    wardsKilled = match_data['info']['participants'][participant_index]['wardsKilled'],
+                    wardsPlaced = match_data['info']['participants'][participant_index]['wardsPlaced'],
+                    win = match_data['info']['participants'][participant_index]['win']
+                )
+                participants.append(participant)
+                print(f'Participant successfully queried for summoner: {participant.summoner_puuid} | {participant.match_id}')
+            except DoesNotExist or UnboundLocalError:
+                # summoner_puuid = match_data['info']['participants'][participant_index]['puuid'] # Debug
+                # print(f'No matching summoner_puuid found for participant: {summoner_puuid} | {participant.match_id}') # Debug
+                pass
+        match_index+=1
+        print(f'Match successfully queried: {match.id} ({match_index}/{len(matches)})')
+    return participants
