@@ -2,7 +2,7 @@
 The LoL-Wintrade-Tracker is a tool that queries Masters+ leagues and uses statistical analysis to find wintraders in the game League of Legends.
 
 ## Get Started
-To use the tool, you need to place your API key in an empty Python file named keys.py inside the config/ folder in the following format:
+To use the tool, you need to place your API key in the empty file named keys.py inside the config/ folder in the following format:
 
     API_KEY = 'your_api_key'
 
