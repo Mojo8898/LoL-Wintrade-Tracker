@@ -17,7 +17,7 @@ def get_participants(region, matches):
         )
         updated_match.save()
         for participant_index in range(10):
-            try: 
+            try:
                 Summoner.get(Summoner.puuid == match_data['metadata']['participants'][participant_index])
                 participant = Participant(
                     summoner_puuid = match_data['metadata']['participants'][participant_index],
